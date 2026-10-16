@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class RentalController {
 
     private final RentalService rentalService;
+    private final BatchRentalService batchRentalService;
 
     @GetMapping
     public List<RentalResponse> list(@RequestParam(required = false) Long memberId) {
@@ -41,6 +42,12 @@ public class RentalController {
     @ResponseStatus(HttpStatus.CREATED)
     public RentalResponse rent(@Valid @RequestBody RentRequest request) {
         return rentalService.rent(request);
+    }
+
+    @PostMapping("/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<RentalResponse> rentAll(@Valid @RequestBody BatchRentRequest request) {
+        return batchRentalService.rentAll(request);
     }
 
     @PostMapping("/{id}/return")

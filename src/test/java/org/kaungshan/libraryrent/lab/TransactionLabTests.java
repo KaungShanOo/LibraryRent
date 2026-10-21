@@ -3,6 +3,7 @@ package org.kaungshan.libraryrent.lab;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @SpringBootTest(properties = "logging.level.org.springframework.orm.jpa.JpaTransactionManager=DEBUG")
 @TestMethodOrder(MethodOrderer.MethodName.class)
+@DisplayName("Transaction Lab (bank transfer)")
 class TransactionLabTests {
 
     @Autowired
@@ -30,6 +32,7 @@ class TransactionLabTests {
     AuditLogRepository auditLogRepository;
 
     @Test
+    @DisplayName("Lesson 1: @Transactional - a successful transfer commits both steps")
     void lesson1_successfulTransferCommitsBothSteps() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, false);
@@ -41,6 +44,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 2: @Transactional - a RuntimeException rolls back everything")
     void lesson2_runtimeExceptionRollsBackEverything() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);   // frozen: step 2 will fail
@@ -54,6 +58,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 3: No transaction - the money disappears when step 2 fails")
     void lesson3_withoutTransactionTheMoneyDisappears() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);
@@ -67,6 +72,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 4a: Checked exception - NOT rolled back by default")
     void lesson4a_checkedExceptionDoesNotRollBackByDefault() {
         Long alice = newAccount("Alice", 5_000, false);
         Long bob = newAccount("Bob", 0, false);
@@ -80,6 +86,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 4b: rollbackFor - makes a checked exception roll back")
     void lesson4b_rollbackForMakesCheckedExceptionRollBack() {
         Long alice = newAccount("Alice", 5_000, false);
         Long bob = newAccount("Bob", 0, false);
@@ -92,6 +99,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 5: Self-call - this.transfer() skips @Transactional")
     void lesson5_selfCallSkipsTransactional() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);
@@ -105,6 +113,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 6a: REQUIRED - the audit log is rolled back with the transfer")
     void lesson6a_requiredLogIsRolledBackWithTheTransfer() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);
@@ -117,6 +126,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 6b: REQUIRES_NEW - the audit log survives the rollback")
     void lesson6b_requiresNewLogSurvivesTheRollback() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);
@@ -130,6 +140,7 @@ class TransactionLabTests {
     }
 
     @Test
+    @DisplayName("Lesson 7: TransactionTemplate - rolls back just like @Transactional")
     void lesson7_programmaticTransactionBehavesLikeTheAnnotation() {
         Long alice = newAccount("Alice", 500, false);
         Long bob = newAccount("Bob", 0, true);
